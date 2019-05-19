@@ -4,8 +4,36 @@
     padding: 10rpx 25rpx;
 }
 
+.radiogrp{
+    display: flex;
+    justify-content: center;
+    padding: 25rpx;
+}
+
+.radiobox{
+    margin: 0 20rpx;
+}
+
+.opbtns{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10rpx;
+}
+
+.opbtn{
+    width: 200rpx;
+    height: 100rpx;
+    line-height: 100rpx;
+    font-size: 35rpx;
+    padding: 0;
+    background-color: #F8F8F8;
+
+}
+
 .usernumbox{
     display: flex;
+    justify-content: center;
     padding: 10rpx;
 }
 
@@ -40,11 +68,9 @@
     border: 1px solid #000;
 }
 
-.eachbuy{
-    display: flex;
-    padding: 10rpx;
+.queryboom{
+    margin: 25rpx;
 }
-
 
 
 

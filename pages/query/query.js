@@ -1,34 +1,32 @@
 // pages/query/query.js
 
-// const query = wx.createSelectorQuery();
-// const allfal = [false, false, false, false, false, false, false];
-let lastfocus = "";
-let itemnums = [];
+let lastfocus = {};
+let usernums = [[]];
 let boomnums = [];
 
 // 数组传入
-function lottoMatch(buys, booms){
+function lotmatch(buys, booms, rednum){
   // 先红球
   let orboom = [];
-  let rednum = 0;
-  for(let i=0; i<5; i++){
-    for(let j=0; j<5; j++){
+  let redboom = 0;
+  for(let i=0; i<rednum; i++){
+    for(let j=0; j<rednum; j++){
       if(booms[i] == buys[j]){
         orboom.push({boom: true, ord:i, num: booms[i]});
-        rednum++;
+        redboom++;
         break;
       }
-      if(j == 4){
+      if(j == rednum-1){
         orboom.push({boom: false, ord:i, num: booms[i]});
       }
     }
   }
-  let bluenum = 0;
-  for(let i=5; i<7; i++){
-    for(let j=5; j<7; j++){
+  let blueboom = 0;
+  for(let i=rednum; i<7; i++){
+    for(let j=rednum; j<7; j++){
       if(booms[i] == buys[j]){
         orboom.push({boom: true, ord:i, num: booms[i]});
-        bluenum++;
+        blueboom++;
         break;
       }
       if(j == 6){
@@ -36,12 +34,29 @@ function lottoMatch(buys, booms){
       }
     }
   }
-  return {rednum,bluenum,orboom};
+  return {redboom,blueboom,orboom};
 }
 
-function tcMatch(buys, booms){
-
+function constdata(id, rednum){
+  let nums = [];
+  for(let i=0; i<7; i++){
+    nums.push({id: id+"_n"+i, ord: i, value: "", focus: false});
+  }
+  return {id,rednum,nums};
 }
+
+// {
+//   id: "a0",
+//   rednum: 5,
+//   nums: [
+//     {
+//       id: "a0n0",
+//       ord: "0",
+//       value: "",
+//       focus: false
+//     }
+//   ]
+// }
 
 Page({
 
@@ -49,45 +64,63 @@ Page({
    * 页面的初始数据
    */
   data: {
-    // inpfs: allfal
-    inpf1: false,
-    inpf2: false,
-    inpf3: false,
-    inpf4: false,
-    inpf5: false,
-    inpf6: false,
-    inpf7: false,
-    // allnums: [{id:"first", arr:itemnums}]
+    rednum: 5,
+    allinpus: [
+      constdata("a0", 5)
+    ]
+  },
+
+  radioChange(e){
+    if(e.detail.value == "lotto"){
+      let allinpus = this.data.allinpus;
+      for(let i=0,len=allinpus.length; i<len; i++){
+        allinpus[i].rednum = 5;
+      }
+      this.setData({rednum:5, allinpus});
+    }else if(e.detail.value == "twocol"){
+      let allinpus = this.data.allinpus;
+      for(let i=0,len=allinpus.length; i<len; i++){
+        allinpus[i].rednum = 6;
+      }
+      this.setData({rednum:6, allinpus});
+    }
   },
 
   listeninput(e){
     // console.log(e);
     let value = e.detail.value;
     let id = e.currentTarget.id;
+    let line = id.substring(id.indexOf("a")+1, id.indexOf("_"))*1;
+    let ord = id.substring(id.indexOf("n")+1)*1;
+    let allinpus = this.data.allinpus;
+    allinpus[line].nums[ord].value = value;
+    usernums[line][ord] = value;
+    // console.log(ord);
+    // console.log(lastfocus);
+    // console.log(lastfocus.keys);
     if(value.length >= 2){
-      let ord = id.substring(id.length - 1)*1+1;
-      itemnums[ord-1] = value;
-      let ordid = "inpf" + ord;
-      // console.log(ord);
-      if(ord < 7){
+      if(ord < 6){
         let temp = {};
-        if(lastfocus){
-          // console.log(lastfocus);
-          temp[ordid] = false;
+        if(lastfocus.line != undefined){
+          allinpus[lastfocus.line].nums[lastfocus.ord].focus = false;
         }
-        lastfocus = ordid;
-        temp[ordid] = true;
-        this.setData(temp);
-        // this.data.inpfs = allfal;
-        // this.data.inpfs[id.substring(id.length - 1)*1] = true;
-        // console.log(this.data.inpfs);
-        // console.log(allfal);
-        // this.setData({inpfs:allfal});
+        allinpus[line].nums[ord+1].focus = true;
+        //focus true的元素
+        lastfocus = {line, ord:ord+1};
+        this.setData({allinpus});
+      }else if(line < allinpus.length-1){
+        if(lastfocus.line != undefined){
+          allinpus[lastfocus.line].nums[lastfocus.ord].focus = false;
+        }
+        allinpus[line+1].nums[0].focus = true;
+        lastfocus = {line:line+1, ord:0};
+        this.setData({allinpus});
       }else{
         console.log("no other input...");
       }
     }
-    // console.log(itemnums);
+    // console.log(usernums);
+    // console.log(allinpus);
   },
   listenbominput(e){
     let value = e.detail.value;
@@ -111,14 +144,22 @@ Page({
     // console.log(boomnums);
   },
 
-
-
-  // boominput(e){
-  //   boomnums = e.detail.value;
-  // },
+  addlinefuc(){
+    usernums.push([]);
+    let allinpus = this.data.allinpus;
+    allinpus.push(constdata("a"+allinpus.length, 5));
+    this.setData({allinpus});
+  },
+  
+  dellinefuc(){
+    usernums.pop();
+    let allinpus = this.data.allinpus;
+    allinpus.pop();
+    this.setData({allinpus});
+  },
 
   queryboom(){
-    if(itemnums.length < 7){
+    if(usernums[0].length < 7){
       wx.showToast({
         title: '输入的号码有误',
         icon: 'none',
@@ -134,17 +175,16 @@ Page({
       })
       return;
     }
-    // console.log(boomnum);
-    // let arr = [];
-    // for(let i=0; i<7; i++){
-    //   arr.push(boomnum.substring(2*i, 2*i+2));
-    // }
-    // arr = [11,12,13,14,15,8,9];
-    // itemnums = [11,12,13,15,17,7,8];
-    // console.log(arr);
-    let result = lottoMatch(itemnums, boomnums);
-    console.log(result);
-    this.setData({allnums: [{id:"first", nums:result.orboom}]});
+    let allnums = [];
+    for(let i=0,len=usernums.length; i<len; i++){
+      if(usernums[i].length == 7){
+        let temp = lotmatch(usernums[i], boomnums, this.data.rednum);
+        temp.id = "resultnum"+i;
+        allnums.push(temp);
+      }
+    }
+    // console.log(allnums);
+    this.setData({allnums});
   },
 
   /**
