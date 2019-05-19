@@ -241,6 +241,7 @@ Page({
       if(usernums[i].length == 7){
         let temp = lotmatch(usernums[i], boomnums, this.data.rednum);
         temp.id = "resultnum"+i;
+        temp.rednum = this.data.rednum;
         allnums.push(temp);
       }
     }

@@ -43,7 +43,7 @@
     <block wx:for="{{allnums}}" wx:key="{{item.id}}">
         <view class="usernumbox">
             <block wx:for-items="{{item.orboom}}" wx:for-item="nums" wx:key="*item">
-                <view class="usernums {{nums.boom?(nums.ord<5?'backred':'backblue'):'noboom'}}">{{nums.num}}</view>
+                <view class="usernums {{nums.boom?(nums.ord<item.rednum?'backred':'backblue'):'noboom'}}">{{nums.num}}</view>
             </block>
         </view>
     </block>
