@@ -21,6 +21,7 @@
 }
 
 .navqu{
+  margin: auto;
   text-align: center;
   line-height: 100rpx;
   height: 100rpx; 

@@ -1,0 +1,8 @@
+<!--pages/pastetext/pastetext.wxml-->
+<view class="container">
+    <view class="pastetitle">粘贴号码:</view>
+    <view class="pastebox">
+        <textarea class="pastetext" bindinput="afterinput" value="{{pastetextcont}}"></textarea>
+    </view>
+    <button class="pasteConf" bindtap="pasteConf">确认</button>
+</view>

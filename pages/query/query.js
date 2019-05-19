@@ -1,6 +1,7 @@
 // pages/query/query.js
 
 let lastfocus = {};
+let bomlastfocus;
 let usernums = [[]];
 let boomnums = [];
 
@@ -45,6 +46,14 @@ function constdata(id, rednum){
   return {id,rednum,nums};
 }
 
+function constBomData(rednum){
+  let nums = [];
+  for(let i=0; i<7; i++){
+    nums.push({id: "n"+i, ord: i, value: "", focus: false, rednum: rednum});
+  }
+  return nums;
+}
+
 // {
 //   id: "a0",
 //   rednum: 5,
@@ -58,6 +67,32 @@ function constdata(id, rednum){
 //   ]
 // }
 
+function initnums(cont, rednum){
+  let allinpus = [constdata("a0", rednum)];
+  console.log(allinpus);
+  let usernums = [[]];
+  for(let i=0,line=0,ord=0,len=cont.length; i<len;){
+    let value = cont.substring(i, i+2);
+    if(ord < 7){
+      allinpus[line].nums[ord].value = value;
+      usernums[line][ord] = value;
+      ord++;
+    }else{
+      line++;
+      allinpus.push(constdata("a"+line, rednum));
+      usernums.push([]);
+      ord = 0;
+      allinpus[line].nums[ord].value = value;
+      usernums[line][ord] = value;
+      ord++;
+    }
+    i = i + 2;
+  }
+  // console.log(allinpus);
+  // console.log(usernums);
+  return {allinpus, usernums};
+}
+
 Page({
 
   /**
@@ -67,23 +102,31 @@ Page({
     rednum: 5,
     allinpus: [
       constdata("a0", 5)
-    ]
+    ],
+    booms: constBomData(5)
   },
 
   radioChange(e){
+    let rednum;
     if(e.detail.value == "lotto"){
-      let allinpus = this.data.allinpus;
-      for(let i=0,len=allinpus.length; i<len; i++){
-        allinpus[i].rednum = 5;
-      }
-      this.setData({rednum:5, allinpus});
+      rednum = 5;
     }else if(e.detail.value == "twocol"){
-      let allinpus = this.data.allinpus;
-      for(let i=0,len=allinpus.length; i<len; i++){
-        allinpus[i].rednum = 6;
-      }
-      this.setData({rednum:6, allinpus});
+      rednum = 6;
+      // let allinpus = this.data.allinpus;
+      // for(let i=0,len=allinpus.length; i<len; i++){
+      //   allinpus[i].rednum = 6;
+      // }
+      // this.setData({rednum:6, allinpus});
     }
+    let allinpus = this.data.allinpus;
+    let booms = this.data.booms;
+    for(let i=0,len=allinpus.length; i<len; i++){
+      allinpus[i].rednum = rednum;
+    }
+    for(let i=0,len=booms.length; i<len; i++){
+      booms[i].rednum = rednum;
+    }
+    this.setData({rednum:rednum, allinpus, booms});
   },
 
   listeninput(e){
@@ -119,43 +162,61 @@ Page({
         console.log("no other input...");
       }
     }
+    // this.setData({allnums:[]});
     // console.log(usernums);
     // console.log(allinpus);
   },
+
   listenbominput(e){
     let value = e.detail.value;
     let id = e.currentTarget.id;
+    let booms = this.data.booms;
     if(value.length >= 2){
-      let ord = id.substring(id.length - 1)*1+1;
-      boomnums[ord-1] = value;
-      let ordid = "inpbomf" + ord;
-      if(ord < 7){
-        let temp = {};
-        if(lastfocus){
-          temp[ordid] = false;
+      let ord = id.substring(id.indexOf("n")+1)*1;
+      booms[ord].value = value;
+      boomnums[ord] = value;
+      if(ord < 6){
+        // console.log(bomlastfocus);
+        if(bomlastfocus != undefined){
+          // console.log(booms[bomlastfocus].focus);
+          booms[bomlastfocus].focus = false;
+          // console.log(booms[bomlastfocus].focus);
         }
-        lastfocus = ordid;
-        temp[ordid] = true;
-        this.setData(temp);
+        booms[ord+1].focus = true;
+        bomlastfocus = ord+1;
+        this.setData({booms});
       }else{
         console.log("no other input...");
       }
     }
-    // console.log(boomnums);
+    // this.setData({allnums:[]});
+    // console.log(booms);
   },
 
   addlinefuc(){
     usernums.push([]);
     let allinpus = this.data.allinpus;
     allinpus.push(constdata("a"+allinpus.length, this.data.rednum));
-    this.setData({allinpus});
+    this.setData({allinpus,allnums:[]});
   },
   
   dellinefuc(){
+    wx.removeStorageSync("pastetextcont");
     usernums.pop();
     let allinpus = this.data.allinpus;
     allinpus.pop();
-    this.setData({allinpus});
+    this.setData({allinpus,allnums:[]});
+  },
+
+  clearlinefuc(){
+    wx.removeStorageSync("pastetextcont");
+    lastfocus = {};
+    bomlastfocus = undefined;
+    usernums = [[]];
+    boomnums = [];
+    let allinpus = [constdata("a0", this.data.rednum)];
+    let booms = constBomData(this.data.rednum);
+    this.setData({allinpus, booms, allnums:[]});
   },
 
   queryboom(){
@@ -187,6 +248,11 @@ Page({
     this.setData({allnums});
   },
 
+  pastetext(){
+    this.setData({allnums:[]});
+    wx.navigateTo({url: '../pastetext/pastetext'});
+  },
+
   /**
    * 生命周期函数--监听页面加载
    */
@@ -205,7 +271,13 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
+    let pastetextcont = wx.getStorageSync("pastetextcont");
+    // wx.removeStorageSync("pastetextcont");
+    if(pastetextcont){
+      let result = initnums(pastetextcont, this.data.rednum);
+      usernums = result.usernums;
+      this.setData({allinpus:result.allinpus});
+    }
   },
 
   /**
@@ -240,6 +312,9 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
-
+    return {
+      title: '彩票中奖查询',
+      path: '/pages/query/query'
+    }
   }
 })

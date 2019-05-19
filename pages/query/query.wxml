@@ -7,10 +7,15 @@
         <label class="radiobox"><radio value="twocol"/>双色球</label>
     </radio-group>
 
-    <view >请输入号码:</view>
+    <view class="inputhit">
+        <view class="widthfill">请输入号码:</view>
+        <view class="pastebtn" bindtap="pastetext">粘贴输入</view>
+    </view>
+
     <view class="opbtns">
         <button class="opbtn" bindtap="addlinefuc">添加行</button>
         <button class="opbtn" bindtap="dellinefuc" disabled="{{allinpus.length <= 1}}">删除行</button>
+        <button class="opbtn" bindtap="clearlinefuc">清空</button>
     </view>
 
     <block wx:for="{{allinpus}}" wx:key="{{item.id}}">
@@ -20,16 +25,19 @@
             </block>
         </view>
     </block>
-    <view >请输入开奖号码</view>
+    <view class="inputhit">请输入开奖号码:</view>
     <!-- <input bindinput="boominput" class="boominput"/> -->
     <view class="usernumbox">
-        <input id="bom0" class="usernums backred" type="number" bindinput="listenbominput" maxlength="2" focus="{{inpbomf0}}"/>
+        <block wx:for="{{booms}}" wx:key="{{item.id}}">
+            <input id="{{item.id}}" class="usernums {{item.ord<item.rednum?'backred':'backblue'}}" type="number" bindinput="listenbominput" maxlength="2" focus="{{item.focus}}" value="{{item.value}}"/>
+        </block>
+        <!-- <input id="bom0" class="usernums backred" type="number" bindinput="listenbominput" maxlength="2" focus="{{inpbomf0}}"/>
         <input id="bom1" class="usernums backred" type="number" bindinput="listenbominput" maxlength="2" focus="{{inpbomf1}}"/>
         <input id="bom2" class="usernums backred" type="number" bindinput="listenbominput" maxlength="2" focus="{{inpbomf2}}"/>
         <input id="bom3" class="usernums backred" type="number" bindinput="listenbominput" maxlength="2" focus="{{inpbomf3}}"/>
         <input id="bom4" class="usernums backred" type="number" bindinput="listenbominput" maxlength="2" focus="{{inpbomf4}}"/>
         <input id="bom5" class="usernums {{rednum>5?'backred':'backblue'}}" type="number" bindinput="listenbominput" maxlength="2" focus="{{inpbomf5}}"/>
-        <input id="bom6" class="usernums backblue" type="number" bindinput="listenbominput" maxlength="2" focus="{{inpbomf6}}"/>
+        <input id="bom6" class="usernums backblue" type="number" bindinput="listenbominput" maxlength="2" focus="{{inpbomf6}}"/> -->
     </view>
     <button class="queryboom" bindtap="queryboom">查询</button>
     <block wx:for="{{allnums}}" wx:key="{{item.id}}">

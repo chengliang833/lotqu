@@ -1,0 +1,26 @@
+/* pages/pastetext/pastetext.wxss */
+
+.container{
+    padding: 10rpx 25rpx;
+}
+
+.pastetitle{
+    padding: 10rpx 25rpx;
+}
+
+.pastebox{
+    height: 550rpx;
+    padding: 25rpx 50rpx;
+}
+
+.pastetext{
+    background-color: #fff;
+    height: 500rpx;
+    width: 100%;
+    border: 1px solid #000;
+}
+
+.pasteConf{
+    margin: 0 25rpx;
+}
+
