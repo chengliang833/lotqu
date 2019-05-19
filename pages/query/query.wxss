@@ -1,0 +1,53 @@
+/* pages/query/query.wxss */
+
+.container{
+    padding: 10rpx 25rpx;
+}
+
+.usernumbox{
+    display: flex;
+    padding: 10rpx;
+}
+
+.usernums{
+    font-size: 15px;
+    text-align: center;
+    width: 25px;
+    height: 25px;
+    line-height: 25px;
+    /* border: 1px solid #000; */
+    border-width: 0;
+    color: #fff;
+    border-radius: 25px;
+    margin: 0 10rpx;
+}
+
+.backred{
+    background-color: red;
+}
+.backblue{
+    background-color: blue;
+}
+.noboom{
+    width: 23px;
+    height: 23px;
+    line-height: 23px;
+    border: 1px solid #000;
+    color: #000;
+}
+
+.boominput{
+    border: 1px solid #000;
+}
+
+.eachbuy{
+    display: flex;
+    padding: 10rpx;
+}
+
+
+
+
+
+
+

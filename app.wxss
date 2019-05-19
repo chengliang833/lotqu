@@ -1,0 +1,107 @@
+/**app.wxss**/
+
+page {
+  background-color: #F8F8F8;
+  /* height: 100%; */
+  font-size: 32rpx;
+  line-height: 1.6;
+}
+
+.container {
+  /* width: 100%; */
+  /* height: 1000rpx; */
+  padding: 10rpx 0;
+} 
+/* 开发边框 */
+view, cover-view{
+  border: 1px solid #000000;
+}
+
+/* 边框单独调试 */
+.border{
+  border: 1px solid #000000;
+}
+
+/* 垂直居中 */
+.vsubcenter{
+  display: flex;
+  align-items: center;
+}
+.hsubcenter{
+  display: flex;
+  justify-content: center;
+}
+
+
+scrollview{
+  display: block;
+}
+
+/* width */
+.w100{
+  width: 100%;
+}
+.w100rx{
+  width: 100rpx;
+}
+
+
+/* height */
+.h100{
+  height: 100%;
+}
+.h100rx{
+  height: 100rpx;
+}
+
+/* margin */
+.marg10rxtop{
+  margin: 10rpx 0 0 0;
+}
+
+.disflex{
+  display: flex;
+}
+
+/* flex下默认row */
+.flexdircol{
+  flex-direction: column;
+}
+/* flex下默认nowarp */
+.flexwrap{
+  flex-wrap:wrap;
+}
+
+/* flex下默认flex-start */
+.jstcontce{
+  justify-content:center;
+}
+.jstcontaround{
+  justify-content:space-around;
+}
+
+
+
+/* width*grow弃用, 直接width100%, 可以取剩下宽的100% */
+/* flex下宽自动填充 */
+/* 原宽 默认 可以不用添加 */
+.widthorg{
+  flex-grow: 0;
+}
+/* 填充宽,多个时按比例 1 2 3... 但不能缩小 */
+.widthfill{
+  flex-grow: 1;
+}
+
+/* 原宽2 默认 不加 */
+.widthorg2{
+  flex-shrink: 0;
+}
+/* 缩小宽,多个时比例, 但不能扩大, 一般fill 当需要缩小时shrink+w100% */
+.widthzout{
+  width: 100%;
+  flex-shrink: 100;
+}
+
+
+
