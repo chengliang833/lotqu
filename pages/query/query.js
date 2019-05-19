@@ -147,7 +147,7 @@ Page({
   addlinefuc(){
     usernums.push([]);
     let allinpus = this.data.allinpus;
-    allinpus.push(constdata("a"+allinpus.length, 5));
+    allinpus.push(constdata("a"+allinpus.length, this.data.rednum));
     this.setData({allinpus});
   },
   
