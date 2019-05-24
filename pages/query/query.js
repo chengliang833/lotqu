@@ -389,7 +389,9 @@ Page({
   },
 
   queryboom(){
-    if(usernums[0].length < 7){
+    console.log(usernums);
+    console.log(boomnums);
+    if(this.data.allinpus[0].value.length < 14){
       wx.showToast({
         title: '输入的号码有误',
         icon: 'none',
@@ -397,7 +399,7 @@ Page({
       })
       return;
     }
-    if(boomnums.length < 7){
+    if(this.data.boominpvalue.length < 14){
       wx.showToast({
         title: '开奖号码有误',
         icon: 'none',
