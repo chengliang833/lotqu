@@ -13,9 +13,9 @@ page {
   padding: 10rpx 0;
 } 
 /* 开发边框 */
-view, cover-view{
+/* view, cover-view{
   border: 1px solid #000000;
-}
+} */
 
 /* 边框单独调试 */
 .border{
