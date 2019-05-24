@@ -394,13 +394,13 @@ Page({
   },
 
   querysingbooms(){
-    this.setData({coverUse:true});
-    wx.$showLoading("loading...");
     // console.log(this.data.periodsvalue);
     if(this.data.periodsvalue.length != 5){
       wx.$alert("期数有误");
       return;
     }
+    this.setData({coverUse:true});
+    wx.$showLoading("loading...");
     let that = this;
     let requestUrl;
     if(this.data.rednum == 5){
