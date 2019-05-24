@@ -433,7 +433,7 @@ Page({
         let encodedString = String.fromCharCode.apply(null, uint8Array);
         // let encodedString = String.fromCodePoint.apply(null, uint8Array);
         // let encodedString = String.fromCharCode.apply(null, wx.$Utf8ToUnicode(uint8Array.toString()));
-        console.log(encodedString);
+        // console.log(encodedString);
         // let decodedString = decodeURIComponent(escape(encodedString));//没有这一步中文会乱码
         
         // let decodedString = decodeURIComponent(uint8Array.map(
