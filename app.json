@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/query/query",
+    "pages/webviewdlt/webviewdlt",
     "pages/webview/webview",
     "pages/index/index",
     "pages/pastetext/pastetext",

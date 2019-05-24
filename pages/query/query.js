@@ -26,26 +26,26 @@ function lotmatch(buys, booms, rednum){
   let redboom = 0;
   for(let i=0; i<rednum; i++){
     for(let j=0; j<rednum; j++){
-      if(booms[i] == buys[j]){
-        orboom.push({boom: true, ord:i, num: booms[i]});
+      if(buys[i] == booms[j]){
+        orboom.push({boom: true, ord:i, num: buys[i]});
         redboom++;
         break;
       }
       if(j == rednum-1){
-        orboom.push({boom: false, ord:i, num: booms[i]});
+        orboom.push({boom: false, ord:i, num: buys[i]});
       }
     }
   }
   let blueboom = 0;
   for(let i=rednum; i<7; i++){
     for(let j=rednum; j<7; j++){
-      if(booms[i] == buys[j]){
-        orboom.push({boom: true, ord:i, num: booms[i]});
+      if(buys[i] == booms[j]){
+        orboom.push({boom: true, ord:i, num: buys[i]});
         blueboom++;
         break;
       }
       if(j == 6){
-        orboom.push({boom: false, ord:i, num: booms[i]});
+        orboom.push({boom: false, ord:i, num: buys[i]});
       }
     }
   }
@@ -423,7 +423,7 @@ Page({
         if(data.match(/.*直播回放(.*(\d{2})<\/li>).*/)){
           // console.log(data.replace(/.*直播回放.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*/,"$1$2$3$4$5$6$7"));
           let boominpvalue = data.replace(/.*直播回放.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*/,"$1$2$3$4$5$6$7");
-          let booms = constBomData(5);
+          let booms = constBomData(that.data.rednum);
           boomnums = [];
           for(let i=0; i<7; i++){
             booms[i].value = boominpvalue.substring(2*i, 2*i+2);
@@ -443,12 +443,14 @@ Page({
   goto500(){
     if(this.data.rednum == 5){
       console.log(555);
-      wx.setStorageSync("boomurl", "https://m.500.com/info/kaijiang/dlt");
+      // wx.setStorageSync("boomurl", "https://m.500.com/info/kaijiang/dlt");
+      wx.navigateTo({url: '../webviewdlt/webviewdlt'});
     }else{
       console.log(666);
-      wx.setStorageSync("boomurl", "https://m.500.com/info/kaijiang/ssq");
+      // wx.setStorageSync("boomurl", "https://m.500.com/info/kaijiang/ssq");
+      wx.navigateTo({url: '../webview/webview'});
     }
-    wx.navigateTo({url: '../webview/webview'});
+    // console.log(wx.getStorageSync("boomurl"));
   },
 
   queryboom(){

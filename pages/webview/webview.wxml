@@ -1,2 +1,2 @@
 <!--pages/webview/webview.wxml-->
-<web-view src="{{viewurl}}"></web-view>
+<web-view src="https://m.500.com/info/kaijiang/moreexpect/ssq/?from="></web-view>
