@@ -85,7 +85,7 @@ function constBomData(rednum){
 
 function initnums(cont, rednum){
   let allinpus = [constdata("a0", rednum)];
-  console.log(allinpus);
+  // console.log(allinpus);
   let usernums = [[]];
   for(let i=0,line=0,ord=0,len=cont.length; i<len;){
     let value = cont.substring(i, i+2);
@@ -117,6 +117,7 @@ Page({
    * 页面的初始数据
    */
   data: {
+    periodsvalue: "",
     boominpvalue: "",
     rednum: 5,
     allinpus: [
@@ -388,23 +389,87 @@ Page({
     this.setData({allinpus, booms, allnums:[], boominpvalue:""});
   },
 
+  inpbomper(e){
+    this.setData({periodsvalue: e.detail.value});
+  },
+
+  querysingbooms(){
+    // console.log(this.data.periodsvalue);
+    if(this.data.periodsvalue.length != 5){
+      wx.$alert("期数有误");
+      return;
+    }
+    let that = this;
+    let requestUrl;
+    if(this.data.rednum == 5){
+      requestUrl = 'https://m.500.com/info/kaijiang/dlt/'+this.data.periodsvalue+'.shtml';
+    }else{
+      requestUrl = 'https://m.500.com/info/kaijiang/ssq/'+this.data.periodsvalue+'.shtml';
+    }
+    wx.request({
+      url: requestUrl,
+      // data: {   //param
+      //   x: '',
+      //   y: ''
+      // },
+      method: "GET",
+      header: {
+        'content-type': 'text/html' // 默认值
+      },
+      success(res) {
+        // console.log(res);
+        // console.log(res.data.replace(/\r|\n/g, "").substring(res.data.indexOf("直播回放")));
+        let data = res.data.replace(/\r|\n/g, "");
+        if(data.match(/.*直播回放(.*(\d{2})<\/li>).*/)){
+          // console.log(data.replace(/.*直播回放.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*/,"$1$2$3$4$5$6$7"));
+          let boominpvalue = data.replace(/.*直播回放.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*/,"$1$2$3$4$5$6$7");
+          let booms = constBomData(5);
+          boomnums = [];
+          for(let i=0; i<7; i++){
+            booms[i].value = boominpvalue.substring(2*i, 2*i+2);
+            boomnums[i] = boominpvalue.substring(2*i, 2*i+2);
+          }
+          that.setData({booms, boominpvalue});
+        }else{
+          wx.$alert("期数有误");
+        }
+      },
+      fail(res) {
+        console.log(res);
+      }
+    })
+  },
+
+  goto500(){
+    if(this.data.rednum == 5){
+      console.log(555);
+      wx.setStorageSync("boomurl", "https://m.500.com/info/kaijiang/dlt");
+    }else{
+      console.log(666);
+      wx.setStorageSync("boomurl", "https://m.500.com/info/kaijiang/ssq");
+    }
+    wx.navigateTo({url: '../webview/webview'});
+  },
+
   queryboom(){
-    console.log(usernums);
-    console.log(boomnums);
+    // console.log(usernums);
+    // console.log(boomnums);
     if(this.data.allinpus[0].value.length < 14){
-      wx.showToast({
-        title: '输入的号码有误',
-        icon: 'none',
-        duration: 1500
-      })
+      // wx.showToast({
+      //   title: '输入的号码有误',
+      //   icon: 'none',
+      //   duration: 1500
+      // })
+      wx.$alert("输入的号码有误");
       return;
     }
     if(this.data.boominpvalue.length < 14){
-      wx.showToast({
-        title: '开奖号码有误',
-        icon: 'none',
-        duration: 1500
-      })
+      // wx.showToast({
+      //   title: '开奖号码有误',
+      //   icon: 'none',
+      //   duration: 1500
+      // })
+      wx.$alert("开奖号码有误");
       return;
     }
     let allnums = [];

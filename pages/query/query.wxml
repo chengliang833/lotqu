@@ -30,7 +30,15 @@
             </view>
         </view>
     </block>
-    <view class="inputhit">请输入开奖号码:</view>
+    
+    <view class="inputhit vsubcenter">
+        <view class="widthfill">请输入开奖号码:</view>
+        <view >(或联网查询)</view>
+        <input class="boomperiods" maxlength="5" bindinput="inpbomper" value="{{periodsvalue}}"/>
+        <view class="pastebtn" bindtap="querysingbooms">查询</view>
+    </view>
+
+    <view class="hinteveryone">(开奖数据从500彩票网获取<view class="pastebtn" bindtap="goto500">查看</view>)</view>
     <!-- <input bindinput="boominput" class="boominput"/> -->
     <view class="posibox">
         <input id="boominput" class="realinput" bindinput="listenbominput" type="number" maxlength="14" focus="{{boominpfocus}}" value="{{boominpvalue}}" bindblur="boominpblur"/>

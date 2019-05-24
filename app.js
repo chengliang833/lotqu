@@ -37,3 +37,16 @@ App({
     userInfo: null
   }
 })
+
+
+
+wx.$alert = function(msg){
+  wx.showToast({
+    title: msg,
+    icon: 'none',
+    duration: 1500
+  })
+}
+
+
+
