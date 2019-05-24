@@ -394,6 +394,7 @@ Page({
   },
 
   querysingbooms(){
+    wx.$showLoading("loading...");
     // console.log(this.data.periodsvalue);
     if(this.data.periodsvalue.length != 5){
       wx.$alert("期数有误");
@@ -448,9 +449,9 @@ Page({
         
         // console.log(res.data.replace(/\r|\n/g, "").substring(res.data.indexOf("直播回放")));
         let data = encodedString.replace(/\r|\n/g, "");
-        if(data.match(/.*<em class="red-txt">(.*(\d{2})<\/li>).*/)){
-          // console.log(data.replace(/.*<em class="red-txt">.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*/,"$1$2$3$4$5$6$7"));
-          let boominpvalue = data.replace(/.*<em class="red-txt">.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*/,"$1$2$3$4$5$6$7");
+        // console.log(data.replace(/.*<em class="red-txt">.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*/,"$1$2$3$4$5$6$7"));
+        let boominpvalue = data.replace(/.*<em class="red-txt">.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*/,"$1$2$3$4$5$6$7");
+        if(boominpvalue.indexOf("$") < 0){
           let booms = constBomData(that.data.rednum);
           boomnums = [];
           for(let i=0; i<7; i++){
@@ -464,6 +465,9 @@ Page({
       },
       fail(res) {
         console.log(res);
+      },
+      complete(){
+        wx.$hideLoading();
       }
     })
   },
