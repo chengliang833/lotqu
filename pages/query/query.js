@@ -394,6 +394,7 @@ Page({
   },
 
   querysingbooms(){
+    this.setData({coverUse:true});
     wx.$showLoading("loading...");
     // console.log(this.data.periodsvalue);
     if(this.data.periodsvalue.length != 5){
@@ -432,7 +433,7 @@ Page({
         let encodedString = String.fromCharCode.apply(null, uint8Array);
         // let encodedString = String.fromCodePoint.apply(null, uint8Array);
         // let encodedString = String.fromCharCode.apply(null, wx.$Utf8ToUnicode(uint8Array.toString()));
-        // console.log(encodedString);
+        console.log(encodedString);
         // let decodedString = decodeURIComponent(escape(encodedString));//没有这一步中文会乱码
         
         // let decodedString = decodeURIComponent(uint8Array.map(
@@ -449,25 +450,29 @@ Page({
         
         // console.log(res.data.replace(/\r|\n/g, "").substring(res.data.indexOf("直播回放")));
         let data = encodedString.replace(/\r|\n/g, "");
-        // console.log(data.replace(/.*<em class="red-txt">.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*/,"$1$2$3$4$5$6$7"));
-        let boominpvalue = data.replace(/.*<em class="red-txt">.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*/,"$1$2$3$4$5$6$7");
-        if(boominpvalue.indexOf("$") < 0){
+        if(data.match(/.*<em class="red-txt">\d{2}<\/em>.*/)){
+          // console.log(data.replace(/.*<em class="red-txt">.*(\d{2})<\/em>.*(\d{2})<\/em>.*(\d{2})<\/em>.*(\d{2})<\/em>.*(\d{2})<\/em>.*(\d{2})<\/em>.*(\d{2})<\/em>.*/,"$1$2$3$4$5$6$7"));
+          let boominpvalue = data.replace(/.*<em class="red-txt">.*(\d{2})<\/em>.*(\d{2})<\/em>.*(\d{2})<\/em>.*(\d{2})<\/em>.*(\d{2})<\/em>.*(\d{2})<\/em>.*(\d{2})<\/em>.*/,"$1$2$3$4$5$6$7");
           let booms = constBomData(that.data.rednum);
           boomnums = [];
           for(let i=0; i<7; i++){
             booms[i].value = boominpvalue.substring(2*i, 2*i+2);
             boomnums[i] = boominpvalue.substring(2*i, 2*i+2);
           }
-          that.setData({booms, boominpvalue});
+          wx.$hideLoading();
+          that.setData({booms, boominpvalue, coverUse:false});
         }else{
-          wx.$alert("期数有误");
+          wx.$hideLoading();
+          setTimeout(function(){
+            wx.$alert("期数有误");
+            that.setData({coverUse:false});
+          },1000);
         }
       },
       fail(res) {
-        console.log(res);
-      },
-      complete(){
         wx.$hideLoading();
+        that.setData({coverUse:false});
+        console.log(res);
       }
     })
   },

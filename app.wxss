@@ -1,5 +1,7 @@
 /**app.wxss**/
 
+@import "pages/common/common.wxss"
+
 page {
   background-color: #F8F8F8;
   /* height: 100%; */

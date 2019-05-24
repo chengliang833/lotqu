@@ -1,0 +1,3 @@
+<template name="coverall">
+    <cover-view class="coverallview {{coverUse?'':'height0'}}" catchtouchmove="nomove" catchtap="onbind" ></cover-view>
+</template>
