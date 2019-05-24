@@ -230,10 +230,11 @@ Page({
     if(allinpus[line].nums[ord+1]){
       allinpus[line].nums[ord+1].value = "";
       usernums[line][ord+1] = "";
-    }else if(allinpus[line+1]){
-      allinpus[line+1].nums[0].value = "";
-      usernums[line+1][0] = "";
     }
+    // else if(allinpus[line+1]){
+    //   allinpus[line+1].nums[0].value = "";
+    //   usernums[line+1][0] = "";
+    // }
     allinpus[line].nums[ord].value = value;
     allinpus[line].value = allvalue;
     usernums[line][ord] = value;
@@ -273,8 +274,14 @@ Page({
         // console.log(allinpus);
         // console.log(allinpus[line+1].focus);
         // console.log(allinpus);
-        allinpus[line+1].nums[0].focus = true;
-        lastfocus = {line:line+1, ord:0};
+        
+        if(allinpus[line+1].value.length > 0){
+          lastfocus = {line:line+1, ord:Math.ceil(allinpus[line+1].value.length/2.0)-1};
+          allinpus[line+1].nums[lastfocus.ord].focus = true;
+        }else{
+          lastfocus = {line:line+1, ord:0};
+          allinpus[line+1].nums[0].focus = true;
+        }
         lastCursor = 0;
         setTimeout(function(){
           allowblur = true;

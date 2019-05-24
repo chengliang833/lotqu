@@ -94,8 +94,9 @@
 }
 
 .realinput{
-    opacity: 0;
-    /* width: 0; */
+    /* border: 1px solid red; */
+    opacity: 0.5;
+    width: 0;
 }
 
 .cursorText{
