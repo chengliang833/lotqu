@@ -7,7 +7,7 @@
       <text class="userinfo-nickname">{{userInfo.nickName}}</text>
     </block>
   </view>
-  <view class="usermotto">
+  <view class="usermotto" animation="anim">
     <navigator class="navqu" url="/pages/query/query">查询</navigator>
   </view>
 </view>

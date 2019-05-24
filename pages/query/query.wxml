@@ -19,25 +19,35 @@
     </view>
 
     <block wx:for="{{allinpus}}" wx:key="{{item.id}}">
-        <view class="usernumbox">
-            <block wx:for-items="{{item.nums}}" wx:for-item="nums" wx:key="*item">
-                <input id="{{nums.id}}" class="usernums {{nums.ord<item.rednum?'backred':'backblue'}}" type="number" bindinput="listeninput" maxlength="2" focus="{{nums.focus}}" value="{{nums.value}}"/>
-            </block>
+        <view class="posibox boxheight">
+            <input id="{{item.id}}" class="realinput" bindinput="listeninput" type="number" maxlength="14" focus="{{item.focus}}" value="{{item.value}}" bindblur="listenblur"/>
+            <view id="box{{item.id}}" class="usernumbox usernumbox2" bindtap="showKeyBoard">
+                <view class="margauto disflex">
+                    <block wx:for-items="{{item.nums}}" wx:for-item="nums" wx:key="*item">
+                        <view id="{{nums.id}}" class="usernums {{nums.ord<item.rednum?'backred':'backblue'}}" >{{nums.value}}<text class="cursorText" animation='{{nums.anim}}' ></text></view>
+                    </block>
+                </view>
+            </view>
         </view>
     </block>
     <view class="inputhit">请输入开奖号码:</view>
     <!-- <input bindinput="boominput" class="boominput"/> -->
-    <view class="usernumbox">
-        <block wx:for="{{booms}}" wx:key="{{item.id}}">
-            <input id="{{item.id}}" class="usernums {{item.ord<item.rednum?'backred':'backblue'}}" type="number" bindinput="listenbominput" maxlength="2" focus="{{item.focus}}" value="{{item.value}}"/>
-        </block>
-        <!-- <input id="bom0" class="usernums backred" type="number" bindinput="listenbominput" maxlength="2" focus="{{inpbomf0}}"/>
-        <input id="bom1" class="usernums backred" type="number" bindinput="listenbominput" maxlength="2" focus="{{inpbomf1}}"/>
-        <input id="bom2" class="usernums backred" type="number" bindinput="listenbominput" maxlength="2" focus="{{inpbomf2}}"/>
-        <input id="bom3" class="usernums backred" type="number" bindinput="listenbominput" maxlength="2" focus="{{inpbomf3}}"/>
-        <input id="bom4" class="usernums backred" type="number" bindinput="listenbominput" maxlength="2" focus="{{inpbomf4}}"/>
-        <input id="bom5" class="usernums {{rednum>5?'backred':'backblue'}}" type="number" bindinput="listenbominput" maxlength="2" focus="{{inpbomf5}}"/>
-        <input id="bom6" class="usernums backblue" type="number" bindinput="listenbominput" maxlength="2" focus="{{inpbomf6}}"/> -->
+    <view class="posibox">
+        <input id="boominput" class="realinput" bindinput="listenbominput" type="number" maxlength="14" focus="{{boominpfocus}}" value="{{boominpvalue}}" bindblur="boominpblur"/>
+        <view class="usernumbox usernumbox2" bindtap="showBoomKeyBoard">
+            <view class="margauto disflex">
+                <block wx:for="{{booms}}" wx:key="{{item.id}}">
+                    <view id="{{item.id}}" class="usernums {{item.ord<item.rednum?'backred':'backblue'}}">{{item.value}}<text class="cursorText" animation="{{item.anim}}"></text></view>
+                </block>
+            </view>
+            <!-- <input id="bom0" class="usernums backred" type="number" bindinput="listenbominput" maxlength="2" focus="{{inpbomf0}}"/>
+            <input id="bom1" class="usernums backred" type="number" bindinput="listenbominput" maxlength="2" focus="{{inpbomf1}}"/>
+            <input id="bom2" class="usernums backred" type="number" bindinput="listenbominput" maxlength="2" focus="{{inpbomf2}}"/>
+            <input id="bom3" class="usernums backred" type="number" bindinput="listenbominput" maxlength="2" focus="{{inpbomf3}}"/>
+            <input id="bom4" class="usernums backred" type="number" bindinput="listenbominput" maxlength="2" focus="{{inpbomf4}}"/>
+            <input id="bom5" class="usernums {{rednum>5?'backred':'backblue'}}" type="number" bindinput="listenbominput" maxlength="2" focus="{{inpbomf5}}"/>
+            <input id="bom6" class="usernums backblue" type="number" bindinput="listenbominput" maxlength="2" focus="{{inpbomf6}}"/> -->
+        </view>
     </view>
     <button class="queryboom" bindtap="queryboom">查询</button>
     <block wx:for="{{allnums}}" wx:key="{{item.id}}">

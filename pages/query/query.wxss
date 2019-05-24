@@ -85,12 +85,29 @@
 }
 
 
+.usernumbox2{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 0;
+}
 
+.realinput{
+    opacity: 0;
+    /* width: 0; */
+}
 
+.cursorText{
+    border-width: 0 1px 0 0;
+    border-style: solid;
+    border-color: #000;
+    opacity: 0;
+}
 
-
-
-
-
+.boxheight{
+    margin-top: 5px;
+    height: 30px;
+}
 
 

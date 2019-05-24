@@ -55,6 +55,10 @@ scrollview{
 }
 
 /* margin */
+.margauto{
+  margin: auto;
+}
+
 .marg10rxtop{
   margin: 10rpx 0 0 0;
 }
@@ -103,5 +107,12 @@ scrollview{
   flex-shrink: 100;
 }
 
+.posibox{
+  position: relative;
+}
 
-
+.posiTL{
+  position: absolute;
+  top: 0;
+  left: 0;
+}

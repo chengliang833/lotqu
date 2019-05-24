@@ -45,6 +45,22 @@ Page({
     }
   },
 
+  /**
+   * 生命周期函数--监听页面显示
+   */
+  onShow: function () {
+    //跳转页面 bind(this)才会触发
+    // console.log(this);
+    // let animation = wx.createAnimation({duration:1000});
+    
+    // setInterval(function () {
+    //   animation.opacity(1).opacity(0).step();
+    //   this.setData({
+    //     anim: animation.export()
+    //   })
+    // }.bind(this), 1000);
+  },
+
   getUserInfo: function(e) {
     console.log(e)
     app.globalData.userInfo = e.detail.userInfo

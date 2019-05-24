@@ -1,9 +1,23 @@
 // pages/query/query.js
 
+//输入位置上一列焦点
 let lastfocus = {};
+//输入位置上一行焦点
+let lastLineFocus;
+//开奖号码位置上一列焦点
 let bomlastfocus;
+//用户输入号码组
 let usernums = [[]];
+//开奖号码组
 let boomnums = [];
+//光标闪烁定时器id
+let animIntervalId;
+//输入栏上次光标位置
+let lastCursor;
+//全局动画
+let animation = wx.createAnimation({duration:500, timingFunction:"step-start"});
+//自动换行后,禁止触发blur
+let allowblur = true;
 
 // 数组传入
 function lotmatch(buys, booms, rednum){
@@ -43,7 +57,7 @@ function constdata(id, rednum){
   for(let i=0; i<7; i++){
     nums.push({id: id+"_n"+i, ord: i, value: "", focus: false});
   }
-  return {id,rednum,nums};
+  return {id,rednum,nums,focus:false, value:""};
 }
 
 function constBomData(rednum){
@@ -57,6 +71,8 @@ function constBomData(rednum){
 // {
 //   id: "a0",
 //   rednum: 5,
+//   value: 1112131415,
+//   focus: false,
 //   nums: [
 //     {
 //       id: "a0n0",
@@ -75,6 +91,7 @@ function initnums(cont, rednum){
     let value = cont.substring(i, i+2);
     if(ord < 7){
       allinpus[line].nums[ord].value = value;
+      allinpus[line].value = allinpus[line].value + value;
       usernums[line][ord] = value;
       ord++;
     }else{
@@ -83,6 +100,7 @@ function initnums(cont, rednum){
       usernums.push([]);
       ord = 0;
       allinpus[line].nums[ord].value = value;
+      allinpus[line].value = allinpus[line].value + value;
       usernums[line][ord] = value;
       ord++;
     }
@@ -99,6 +117,7 @@ Page({
    * 页面的初始数据
    */
   data: {
+    boominpvalue: "",
     rednum: 5,
     allinpus: [
       constdata("a0", 5)
@@ -128,53 +147,190 @@ Page({
     }
     this.setData({rednum:rednum, allinpus, booms});
   },
+  
+  showKeyBoard(e){
+    let id = e.currentTarget.id; //a0
+    let line = id.substring(id.indexOf("a")+1)*1;
+    let allinpus = this.data.allinpus;
+    
+    if(lastLineFocus != undefined){
+      allinpus[lastLineFocus].focus = false;
+    }
+    allinpus[line].focus = true;
+    lastLineFocus = line;
+    
+    if(allinpus[line].value.length > 0){
+      lastfocus = {line:line, ord:Math.ceil(allinpus[line].value.length/2.0)-1};
+    }else{
+      lastfocus = {line:line, ord:0};
+    }
+
+    this.setData({allinpus});
+    console.log(e);
+  },
+
+  showBoomKeyBoard(e){
+    let boominpfocus = true;
+    if(this.data.boominpvalue.length > 0){
+      bomlastfocus = Math.ceil(this.data.boominpvalue.length/2.0)-1;
+    }else{
+      bomlastfocus = 0;
+    }
+    this.setData({boominpfocus});
+  },
+
+  listenblur(e){
+    // console.log("heiheihei");
+    if(allowblur && lastfocus.line != undefined){
+      // console.log("allow?");
+      let allinpus = this.data.allinpus;
+      allinpus[lastfocus.line].focus = false;
+      allinpus[lastfocus.line].nums[lastfocus.ord].focus = false;
+      animation.opacity(0).step();
+      allinpus[lastfocus.line].nums[lastfocus.ord].anim = animation.export();
+      lastfocus = {};
+      this.setData({allinpus});
+    }
+  },
+
+  boominpblur(e){
+    if(bomlastfocus != undefined){
+      let boominpfocus = false;
+      let booms = this.data.booms;
+      booms[bomlastfocus].focus = false;
+      animation.opacity(0).step();
+      booms[bomlastfocus].anim = animation.export();
+      bomlastfocus = undefined;
+      this.setData({boominpfocus, booms});
+    }
+  },
 
   listeninput(e){
-    // console.log(e);
-    let value = e.detail.value;
-    let id = e.currentTarget.id;
-    let line = id.substring(id.indexOf("a")+1, id.indexOf("_"))*1;
-    let ord = id.substring(id.indexOf("n")+1)*1;
+    console.log(e);
+    let allvalue = e.detail.value;  //111213141516
+    // console.log(allvalue);
+    let id = e.currentTarget.id; //a0
+    let line = id.substring(id.indexOf("a")+1)*1;
+    // let ord = id.substring(id.indexOf("n")+1)*1;
+    let value;
+    let ord;
+    if(allvalue.length == 0){
+      ord = 0;
+      value = "";
+    }else if(allvalue.length%2 == 0){
+      ord = Math.ceil(allvalue.length/2.0)-1;
+      value = allvalue.substring(allvalue.length - 2);
+    }else{
+      ord = Math.ceil(allvalue.length/2.0)-1;
+      value = allvalue.substring(allvalue.length - 1);
+    }
     let allinpus = this.data.allinpus;
+    // console.log(allinpus[line].nums[ord+1]);
+    // console.log(allinpus[line+1]);
+    if(allinpus[line].nums[ord+1]){
+      allinpus[line].nums[ord+1].value = "";
+      usernums[line][ord+1] = "";
+    }else if(allinpus[line+1]){
+      allinpus[line+1].nums[0].value = "";
+      usernums[line+1][0] = "";
+    }
     allinpus[line].nums[ord].value = value;
+    allinpus[line].value = allvalue;
     usernums[line][ord] = value;
     // console.log(ord);
     // console.log(lastfocus);
     // console.log(lastfocus.keys);
-    if(value.length >= 2){
+    if(value.length == 2){
+      lastCursor = e.detail.cursor;
       if(ord < 6){
-        let temp = {};
         if(lastfocus.line != undefined){
           allinpus[lastfocus.line].nums[lastfocus.ord].focus = false;
         }
         allinpus[line].nums[ord+1].focus = true;
         //focus true的元素
         lastfocus = {line, ord:ord+1};
-        this.setData({allinpus});
+      lastCursor = e.detail.cursor;
       }else if(line < allinpus.length-1){
+        allowblur = false;
+        console.log("change line...");
+        //换行专用, ==2才检查
+        if(lastLineFocus != undefined){
+          allinpus[lastLineFocus].focus = false;
+        }
         if(lastfocus.line != undefined){
           allinpus[lastfocus.line].nums[lastfocus.ord].focus = false;
         }
+        allinpus[line+1].focus = true;
+        console.log(allinpus[line+1].focus);
+        lastLineFocus = line + 1;
+
+        // console.log(line+1);
+        // console.log(allinpus[line+1].focus);
+        // console.log(allinpus[line+1]);
+        // allinpus[line+1]["focus2"] = true;
+        // console.log("2...");
+        // console.log(allinpus[line+1]);
+        // console.log(allinpus);
+        // console.log(allinpus[line+1].focus);
+        // console.log(allinpus);
         allinpus[line+1].nums[0].focus = true;
         lastfocus = {line:line+1, ord:0};
-        this.setData({allinpus});
+        lastCursor = 0;
+        setTimeout(function(){
+          allowblur = true;
+        }, 500);
       }else{
         console.log("no other input...");
       }
+    }else if(value.length == 1){
+      // console.log(lastCursor);
+      // console.log(e.detail.cursor);
+      if(lastCursor != undefined && lastCursor > e.detail.cursor){
+        console.log("hei...");
+        if(lastfocus.line != undefined){
+          allinpus[lastfocus.line].nums[lastfocus.ord].focus = false;
+        }
+        allinpus[line].nums[ord].focus = true;
+        lastfocus = {line, ord};
+      }
+      console.log("hi...");
+      lastCursor = e.detail.cursor;
     }
+    this.setData({allinpus});
     // this.setData({allnums:[]});
     // console.log(usernums);
     // console.log(allinpus);
   },
 
   listenbominput(e){
-    let value = e.detail.value;
-    let id = e.currentTarget.id;
+    let allvalue = e.detail.value;
+    // let id = e.currentTarget.id;
+    let ord;
+    let value;
+
+    if(allvalue.length == 0){
+      ord = 0;
+      value = "";
+    }else if(allvalue.length%2 == 0){
+      ord = Math.ceil(allvalue.length/2.0)-1;
+      value = allvalue.substring(allvalue.length - 2);
+    }else{
+      ord = Math.ceil(allvalue.length/2.0)-1;
+      value = allvalue.substring(allvalue.length - 1);
+    }
+    
     let booms = this.data.booms;
+
+    if(booms[ord+1]){
+      booms[ord+1].value = "";
+      boomnums[ord+1] = "";
+    }
+    let boominpvalue = allvalue;
+
+    booms[ord].value = value;
+    boomnums[ord] = value;
     if(value.length >= 2){
-      let ord = id.substring(id.indexOf("n")+1)*1;
-      booms[ord].value = value;
-      boomnums[ord] = value;
+      // let ord = id.substring(id.indexOf("n")+1)*1;
       if(ord < 6){
         // console.log(bomlastfocus);
         if(bomlastfocus != undefined){
@@ -184,11 +340,17 @@ Page({
         }
         booms[ord+1].focus = true;
         bomlastfocus = ord+1;
-        this.setData({booms});
       }else{
         console.log("no other input...");
       }
+    }else if(value.length == 1){
+      if(bomlastfocus != undefined){
+        booms[bomlastfocus].focus = false;
+      }
+      booms[ord].focus = true;
+      bomlastfocus = ord;
     }
+    this.setData({booms, boominpvalue});
     // this.setData({allnums:[]});
     // console.log(booms);
   },
@@ -216,7 +378,7 @@ Page({
     boomnums = [];
     let allinpus = [constdata("a0", this.data.rednum)];
     let booms = constBomData(this.data.rednum);
-    this.setData({allinpus, booms, allnums:[]});
+    this.setData({allinpus, booms, allnums:[], boominpvalue:""});
   },
 
   queryboom(){
@@ -279,20 +441,75 @@ Page({
       usernums = result.usernums;
       this.setData({allinpus:result.allinpus});
     }
+    
+    let lastop = 0;
+    let intervalLastShow = {};
+    let bomstop = 0;
+    let bomIntervalShow;
+    animIntervalId = setInterval(function () {
+      // console.log(111);
+      // console.log(lastfocus);
+      // console.log(intervalLastShow);
+      let allinpus = this.data.allinpus;
+      if(lastfocus.line != undefined){
+        if(intervalLastShow.line != undefined && (intervalLastShow.line != lastfocus.line || intervalLastShow.ord != lastfocus.ord)){
+          animation.opacity(0).step();
+          lastop = 0;
+          allinpus[intervalLastShow.line].nums[intervalLastShow.ord].anim = animation.export();
+        }
+        intervalLastShow.line = lastfocus.line;
+        intervalLastShow.ord = lastfocus.ord;
+        if(lastop == 0){
+          animation.opacity(1).step();
+          lastop = 1;
+        }else if(lastop == 1){
+          animation.opacity(0).step();
+          lastop = 0;
+        }
+        allinpus[lastfocus.line].nums[lastfocus.ord].anim = animation.export();
+        // allinpus[lastfocus.line].nums[lastfocus.ord]["a"+lastfocus.line+"_n"+lastfocus.ord] = animation.export();
+        // temp["a"+lastfocus.line+"_n"+lastfocus.ord] = animation.export();
+        // temp.anim = animation.export();
+        // console.log(allinpus);
+      }
+      
+      let booms = this.data.booms;
+      if(bomlastfocus != undefined){
+        // console.log("...");
+        if(bomIntervalShow != undefined && bomIntervalShow != bomlastfocus){
+          animation.opacity(0).step();
+          bomstop = 0;
+          booms[bomIntervalShow].anim = animation.export();
+        }
+        bomIntervalShow = bomlastfocus;
+        if(bomstop == 0){
+          // console.log("000");
+          animation.opacity(1).step();
+          bomstop = 1;
+        }else if(bomstop == 1){
+          // console.log(111);
+          animation.opacity(0).step();
+          bomstop = 0;
+        }
+        booms[bomlastfocus].anim = animation.export();
+      }
+      
+      this.setData({allinpus,booms});
+    }.bind(this), 500);
   },
-
+  
   /**
    * 生命周期函数--监听页面隐藏
    */
   onHide: function () {
-
+    clearInterval(animIntervalId);
   },
 
   /**
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-
+    clearInterval(animIntervalId);
   },
 
   /**
