@@ -1,5 +1,5 @@
 .coverallview{
-    background-color: #000;
+    /* background-color: #000; */
     opacity: 0;
     height: 100%;
     width: 100%;
