@@ -416,14 +416,41 @@ Page({
       header: {
         'content-type': 'text/html' // 默认值
       },
-      dataType: "text",
+      dataType: "其他",
+      responseType: "arraybuffer",
       success(res) {
         // console.log(res);
+        // console.log(res.data);
+
+        let uint8Array = new Uint8Array(res.data);
+
+        // console.log(uint8Array);
+        // console.log(uint8Array[0]);
+        // let decodedString = new TextDecoder("utf-8").decode(new Uint8Array(res.data));
+
+        let encodedString = String.fromCharCode.apply(null, uint8Array);
+        // let encodedString = String.fromCodePoint.apply(null, uint8Array);
+        // let encodedString = String.fromCharCode.apply(null, wx.$Utf8ToUnicode(uint8Array.toString()));
+        // console.log(encodedString);
+        // let decodedString = decodeURIComponent(escape(encodedString));//没有这一步中文会乱码
+        
+        // let decodedString = decodeURIComponent(uint8Array.map(
+        //   function (value, index) {
+        //     if(index > 21740){
+        //       console.log(value);
+        //       console.log(index);
+        //     }
+        //    return '%' + value.toString(16); 
+        //   }
+        // ).join(''));
+
+        // console.log(decodedString);
+        
         // console.log(res.data.replace(/\r|\n/g, "").substring(res.data.indexOf("直播回放")));
-        let data = res.data.replace(/\r|\n/g, "");
-        if(data.match(/.*直播回放(.*(\d{2})<\/li>).*/)){
-          // console.log(data.replace(/.*直播回放.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*/,"$1$2$3$4$5$6$7"));
-          let boominpvalue = data.replace(/.*直播回放.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*/,"$1$2$3$4$5$6$7");
+        let data = encodedString.replace(/\r|\n/g, "");
+        if(data.match(/.*<em class="red-txt">(.*(\d{2})<\/li>).*/)){
+          // console.log(data.replace(/.*<em class="red-txt">.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*/,"$1$2$3$4$5$6$7"));
+          let boominpvalue = data.replace(/.*<em class="red-txt">.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*(\d{2})<\/li>.*/,"$1$2$3$4$5$6$7");
           let booms = constBomData(that.data.rednum);
           boomnums = [];
           for(let i=0; i<7; i++){
