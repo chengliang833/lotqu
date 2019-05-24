@@ -416,6 +416,7 @@ Page({
       header: {
         'content-type': 'text/html' // 默认值
       },
+      dataType: "text",
       success(res) {
         // console.log(res);
         // console.log(res.data.replace(/\r|\n/g, "").substring(res.data.indexOf("直播回放")));
